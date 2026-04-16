@@ -58,8 +58,8 @@ export default function App() {
           <p className="text-blue-700 text-sm leading-relaxed">
             A quadratic equation looks like <strong>y = ax² + bx + c</strong>. It always makes a U-shaped
             curve called a <strong>parabola</strong>. The cool part? You can see <em>why</em> it curves by
-            watching what each piece does! The <strong>x² part</strong> acts like a square (its area
-            grows fast!), the <strong>bx part</strong> acts like a line (grows steadily), and{' '}
+            watching what each piece does! The <strong>x² part</strong> is a real square (its area
+            grows fast!), the <strong>bx part</strong> acts like a rectangle of length x (grows steadily), and{' '}
             <strong>c</strong> just shifts everything up or down. Move the slider below the graph to
             explore any point!
           </p>
