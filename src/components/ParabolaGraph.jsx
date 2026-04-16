@@ -59,13 +59,24 @@ export default function ParabolaGraph({ a, b, c, selectedX, onSelectX }) {
               : rootResult.type === 'double' ? [rootResult.r1]
               : [];
 
-  // Compute y domain tightly from the data, with a small buffer
-  const yValues = data.map((d) => d.y);
+  // Compute y domain from a window centred on the vertex, not the full ±10 range.
+  // Without this, a parabola like x²−4x+3 (vertex y=−1, arms y=143) looks flat
+  // because the arms dominate the scale and the tiny dip below the axis disappears.
+  const xVertex = a !== 0 ? -b / (2 * a) : 0;
+  const WINDOW = 5; // x units either side of vertex used for scale
+  const windowData = data.filter(d => d.x >= xVertex - WINDOW && d.x <= xVertex + WINDOW);
+  const scaleData = windowData.length >= 4 ? windowData : data;
+  const yValues = scaleData.map((d) => d.y);
   const yMin = Math.min(...yValues);
   const yMax = Math.max(...yValues);
   const range = yMax - yMin || 10;
-  const pad = Math.max(range * 0.12, 2);
-  const yDomain = [Math.floor(yMin - pad), Math.ceil(yMax + pad)];
+  // Bottom: when the curve dips below zero keep it tight (1.5× the dip) so the
+  // x-axis crossing is obvious, not buried in whitespace. Above zero use a small flat pad.
+  const domainMin = yMin < 0
+    ? Math.floor(yMin * 1.5)
+    : Math.floor(yMin - Math.max(range * 0.1, 1));
+  const domainMax = Math.ceil(yMax + Math.max(range * 0.12, 2));
+  const yDomain = [domainMin, domainMax];
 
   const selectedY = a * selectedX * selectedX + b * selectedX + c;
 
